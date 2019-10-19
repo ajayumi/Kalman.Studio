@@ -12,6 +12,7 @@ using System.IO;
 using Kalman.Data.SchemaObject;
 using System.Diagnostics;
 using Kalman.Studio.ToolForm;
+using Kalman.Studio.Extensions;
 
 namespace Kalman.Studio
 {
@@ -76,7 +77,7 @@ namespace Kalman.Studio
             {
                 menuItemClose.Enabled =
                 menuItemCloseOther.Enabled =
-                menuItemCloseAll.Enabled = 
+                menuItemCloseAll.Enabled =
                 menuItemSave.Enabled =
                 menuItemSaveAs.Enabled = (ActiveMdiChild != null);
             }
@@ -84,7 +85,7 @@ namespace Kalman.Studio
             {
                 menuItemClose.Enabled = (dockPanel.ActiveDocument != null);
                 menuItemCloseOther.Enabled = (dockPanel.ActiveDocument != null);
-                menuItemCloseAll.Enabled = 
+                menuItemCloseAll.Enabled =
                 menuItemSave.Enabled =
                 menuItemSaveAs.Enabled = (dockPanel.DocumentsCount > 0);
             }
@@ -180,7 +181,7 @@ namespace Kalman.Studio
             }
         }
 
-         //退出程序
+        //退出程序
         private void menuItemExit_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -681,5 +682,32 @@ namespace Kalman.Studio
 
 
         #endregion
+
+        private void tsmiDataX01_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(toolItemDbList.Text.Trim()))
+            {
+                MsgBox.Show("请先选择数据库！");
+                return;
+            }
+
+            var db = toolItemDbList.SelectedItem as SODatabase;
+            DataXGenerater.Instance.CurrDatabase = db;
+            DataXGenerater.Instance.GenTruncateScripts(s => this.AppendOutputLine(s, true));
+        }
+
+        private void tsmiDataX02_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(toolItemDbList.Text.Trim()))
+            {
+                MsgBox.Show("请先选择数据库！");
+                return;
+            }
+
+            var db = toolItemDbList.SelectedItem as SODatabase;
+            DataXGenerater.Instance.CurrDatabase = db;
+            DataXGenerater.Instance.GenShellScripts(s => this.AppendOutputLine(s, true));
+
+        }
     }
 }

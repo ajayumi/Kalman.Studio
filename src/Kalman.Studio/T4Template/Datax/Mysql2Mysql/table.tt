@@ -1,0 +1,60 @@
+﻿<#@ template language="C#" hostSpecific="true" debug="false" #>
+<#@ output extension=".json" #>
+<# 
+	TableHost host = (TableHost)(Host); 
+	SOTable table = host.Table;
+	List<SOColumn> list = host.ColumnList;
+	string nameSpace = host.GetString("NameSpace");
+	string className = host.GetString("ClassName");
+	if(string.IsNullOrEmpty(nameSpace))nameSpace = "Entity";
+	if(string.IsNullOrEmpty(className))className = table.Name;
+	string tableName  = table.Name.Trim();
+#>
+{
+    "job": {
+        "content": [
+            {
+                  "reader": {
+                    "name": "mysqlreader",
+                    "parameter": {
+                        "column": [
+<# foreach (SOColumn c in list) { #>
+"<#= c.Name #>",
+<# } #>],
+                        "connection": [
+                            {
+                                "jdbcUrl": ["jdbc:mysql://zhida-database-ol.mysql.rds.aliyuncs.com:3306/eps?rewriteBatchedStatements=true"],
+                                "table": ["<#= tableName #>"]
+                            }
+                        ],
+                        "password": "Zhida@eps",
+                        "username": "eps"
+                    }
+                },
+                "writer": {
+                    "name": "mysqlwriter",
+                    "parameter": {
+                        "column": [
+<# foreach (SOColumn c in list) { #>
+"<#= c.Name #>",
+<# } #>],
+                        "connection": [
+                            {
+                                
+                                "jdbcUrl": "jdbc:mysql://192.168.11.234:9110/eps",
+                                "table": ["<#= tableName #>"]
+                            }
+                        ],
+                        "password": "zhida@eps",
+                        "username": "eps"
+                    }
+                }
+            }
+        ],
+        "setting": {
+            "speed": {
+                "channel": 1
+            }
+        }
+    }
+}
